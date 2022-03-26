@@ -1,0 +1,161 @@
+CODE: 
+
+# import the necessary packages
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import numpy as np
+import time
+import cv2
+import adafruit_character_lcd.character_lcd as characterlcd
+import os
+import subprocess
+import board
+import digitalio
+os.system ('amixer cset numid=3 1')
+
+
+
+# Modify this if you have a different sized character LCD
+lcd_columns = 16
+lcd_rows = 2
+# compatible with all versions of RPI as of Jan. 2019
+# v1 - v3B+
+lcd_rs = digitalio.DigitalInOut(board.D14)
+lcd_en = digitalio.DigitalInOut(board.D15)
+lcd_d4 = digitalio.DigitalInOut(board.D18)
+lcd_d5 = digitalio.DigitalInOut(board.D23)
+lcd_d6 = digitalio.DigitalInOut(board.D24)
+lcd_d7 = digitalio.DigitalInOut(board.D25)
+
+
+button = digitalio.DigitalInOut(board.D8)
+button.direction = digitalio.Direction.INPUT
+
+motctr = digitalio.DigitalInOut(board.D21)
+motctr.direction = digitalio.Direction.OUTPUT
+#print('I am here')
+
+#while (button.value==True):
+#    print("Motor not moving")
+# Initialise the lcd class
+lcd = characterlcd.Character_LCD_Mono(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6,
+                                      lcd_d7, lcd_columns, lcd_rows)
+
+# initialize the camera and grab a reference to the raw camera capture
+camera = PiCamera()
+rawCapture = PiRGBArray(camera)
+# allow the camera to warmup
+time.sleep(0.5)
+# grab an image from the camera
+camera.capture(rawCapture, format="bgr")
+image1 = rawCapture.array
+img1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+time.sleep(1)
+cv2.imshow("full tank",img1)
+cv2.waitKey(5000)
+print("Background image aquired")
+
+while True:
+    count = 1
+    motctr.value = True
+    time.sleep(0.5)
+    if (button.value==True):
+        count=count+1
+        time.sleep(0.5)
+    motctr.value = False
+    time.sleep(0.5)
+    rawCapture = PiRGBArray(camera)
+    # allow the camera to warmup
+    time.sleep(0.1)
+    # grab an image from the camera
+    camera.capture(rawCapture, format="bgr")
+    image2 = rawCapture.array
+    img2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+    #diff=img2-img1
+    diff=cv2.subtract(img1,img2)
+    img_new = cv2.imread('emptytank.jpg')
+    img_new = cv2.cvtColor(img_new, cv2.COLOR_BGR2GRAY)
+    width = 350
+    height = 450
+    dim = (width, height)
+    img2 = cv2.resize(img2, dim, interpolation = cv2.INTER_AREA)
+    # resize image
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol0= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml150.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol1= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml300.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol2= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml450.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol3= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml600.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol4= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml750.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol5= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml900.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol6= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml1050.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol7= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml1200.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol8= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml1350.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol9= round(petrol * 1000 / 1000,3)
+    img_new = cv2.imread('ml1500.jpg', cv2.IMREAD_GRAYSCALE)
+    img_new = cv2.resize(img_new, dim, interpolation = cv2.INTER_AREA)
+    diffe=cv2.subtract(img_new,img2)
+    petrol=np.mean(diffe)
+    petrol10= round(petrol * 1000 / 1000,3)
+    probofcr=[petrol0, petrol1, petrol2, petrol3, petrol4, petrol5,petrol6, petrol7, petrol8, petrol9, petrol10]
+    maxindex=probofcr.index(max(probofcr))
+    minindex=probofcr.index(min(probofcr))
+    maxval=probofcr[maxindex]
+    minval=probofcr[minindex]
+    petrolremain=(minindex*150)+(minval*150/maxval)
+    petrolremain=(round(petrolremain * 1000 / 1000,3))
+    #diff = (diff * 255).astype("uint8")
+    #cv2.imshow("live feed",diff)
+    #cv2.waitKey(5)
+    petrol=np.mean(diff)
+    petrol= round(petrol * 1000 / 1000,3)
+    distance=(60-petrol)
+    lcd_line_1 = str(petrolremain)+"ml     \n"
+    distance =round(distance * 1000 / 1000,3)
+    lcd_line_2 = "Dist:"+str(distance)+"Km"+"             "
+    lcd.message = lcd_line_1 + lcd_line_2
+    if(petrol>15):
+        os.system ('omxplayer -o local /home/pi/Downloads/beep.wav')
+        lcd_line_1 = "Alert           \n"
+        lcd_line_2 = "Possible leakage "
+        lcd.message = lcd_line_1 + lcd_line_2
+        motctr.value = True
+        time.sleep(5)
+cv2.destroyAllWindows()
